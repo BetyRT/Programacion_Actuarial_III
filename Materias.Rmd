@@ -1,0 +1,17 @@
+---
+title: "Materias"
+output: html_document
+---
+#Las materias que he aprovado
+
+* 1.- Progra I                           Calf 6
+* 2.- Intr. a la Profecion Actuarial     Calf 7
+* 3.- DHPC                               Calf 9
+* 4.- Teoria del Interes I               Calf 7
+* 5.- Microeconomia                      Calf 6
+* 6.- Formacion Humana y Soc.            Calf 9
+* 7.- Programacion Actuarial 2           Calf 8
+* 8.- Teoria del interes II              Calf 7
+* 9._ Macroeconomia                      Calf 7
+* 10.-Lengua extrangera I                Calf 9
+
