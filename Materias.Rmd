@@ -2,7 +2,7 @@
 title: "Materias"
 output: html_document
 ---
-#Las materias que he aprovado
+#Las materias que he aprobado
 
 * 1.- Progra I                           Calf 6
 * 2.- Intr. a la Profecion Actuarial     Calf 7
