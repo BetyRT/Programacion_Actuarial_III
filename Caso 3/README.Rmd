@@ -1,0 +1,108 @@
+---
+title: "ReadMe"
+author: "Betty Ramirez"
+date: "21 de junio de 2016"
+output: html_document
+---
+
+#Benemérita Universidad Autónoma de Puebla
+##Facultad de Ciencias Físico Matemáticas
+
+##Programación Actuarial III
+
+##Beatriz Aurora Ramirez Tlapanco
+
+###Introducción del proyecto
+
+Una de las áreas más populares del análisis de datos proviene de las computadoras de vestimenta. Para más detalles puedes consultar este artículo: <http://www.insideactivitytracking.com/datascienceactivitytrackingandthebattlefortheworldstopsportsbrand/>
+
+Compañías como Fitbit, Nike y Jawbone Up compiten para desarrollar los algoritmos más avanzados para atraer a nuevos usuarios. Los datos de este caso provienen de los acelerómetros ubicados en celulares Samsung Galaxy S.
+
+###Proposito del proyecto
+
+El propósito de este proyecto es demostrar tu habilidad para recolectar, trabajar y limpiar base de datos. El objetivo es preparar un conjunto ordenado de información que pueda ser trabajado en análisis posteriores.
+
+Pasos a seguir para resolver el proyecto
+
+1) Une los datos de test con los de training, para crear un solo conjunto de datos. 
+
+2) Extrae únicamente las medidas de media y desviación estándar de cada medición. 
+
+3) Usa nombres de actividad para describir los nombres de las actividades en la base de datos. 
+
+4) Coloca etiquetas apropiadas en la base de datos con nombres de variables que las describan. 
+
+5) Con los datos del paso 4, crea una segunda base de datos independiente con el promedio de cada variable para cada actividad y cada sujeto.
+
+###Extracción de datos
+
+Extrae los datos de train y test, al mismo tiempo los une, en el caso de la variable "activities" extrae los datos solo de la segunda columna.
+
+`data <- rbind(read.table("~/UCI HAR Dataset/train/X_train.txt"),read.table("~/UCI HAR Dataset/test/x_test.txt"))`
+`encabezados <- read.table("~/UCI HAR Dataset/features.txt")`
+`activities <- rbind(read.table("~/UCI HAR Dataset/train/y_train.txt"),read.table("~/UCI HAR Dataset/test/y_test.txt"))[,1]`
+`labels <- as.character(read.table("~/UCI HAR Dataset/activity_labels.txt")[,2])`
+`participantes <- rbind(read.table("~/UCI HAR Dataset/train/subject_train.txt"),read.table("~/UCI HAR Dataset/test/subject_test.txt"))[,1]` 
+
+La variable labels extrae el nombre de las actividades, esto es útil ya que si hay demasiadas actividades no es forzoso tener que escribir una por una.
+
+###Poner títulos
+
+Ocuparemos este codigo para colocarle titulos a las columnas de la base de datos
+
+
+`colnames(data) <- encabezados$V2`
+
+Usamos la línea del código `encabezados$v2` porque existen dos columnas en "encabezados" y nos interesa solamente la segunda columna.
+
+###Extraer la media y desviación estándar
+
+Ocuparemos la función `grepl` que se encarga de buscar coincidencias respecto a un argumento o patrón, en este caso nuestro patrón es `'-(mean|std)\\('`.
+
+
+`medidas <- grepl('-(mean|std)\\(',encabezados$V2)`
+`data <- data[medidas]`
+
+
+En la nueva base de datos data es la extracción de los datos de la base de datos medidas.
+
+###Nombres de Actividades
+
+En la base de datos hay 6 diferentes actividades, las cuales utilizaremos para describir los nombres en la base de datos, con las bases de datos `activities` y `labels`.
+
+
+`activities <- labels[activities]`
+
+
+###Etiquetas apropiadas
+
+Colocaremos etiquetas apropiadas en la base de datos con nombres que las describan.
+
+
+`colnames(data) <- gsub("mean", "Mean", colnames(data))`
+`colnames(data) <- gsub("std", "Std", colnames(data))`
+`colnames(data) <- gsub("t", "Time", colnames(data))`
+`colnames(data) <- gsub("f", "Frequency", colnames(data))`
+`colnames(data) <- gsub("\\(\\)", "", colnames(data))`
+`colnames(data) <- gsub("-", "", colnames(data))`
+`colnames(data) <- gsub("BodyBody", "Body", colnames(data))`
+`colnames(data) <- gsub("^", "MeanOf", colnames(data))`
+
+###Combinar bases de datos
+
+Uniremos todas las bases de datos que tenemos hasta ahora con `cbind()`.
+
+
+`data <- cbind(Participante = Participantes,Actividad = activities,data)`
+
+En esta nueva base de datos estarán todos los datos de los 30 participantes que hicieron la prueba y los datos de cada actividad.
+
+###Hacer un libro de texto
+
+Con la última base de datos data lo convertiremos en un libro de texto que aparecerá en el directorio de trabajo utilizamos el paquete `dplyr`.
+
+`prom_data_set <- data %>% group_by(Participante,Actividad) %>% summarise_each(funs(mean))`
+
+La función `write.table` para hacer el libro de texto con la base de datos.
+
+`write.table(prom_data_set,row.names = F,file = "Base de datos.txt")`
